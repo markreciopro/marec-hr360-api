@@ -1,77 +1,59 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import shutil
-import os
 
-app = FastAPI(
-    title="MAREC HR360 API",
-    description="HR Intelligence Platform Backend",
-    version="1.0"
-)
+app = FastAPI()
 
-# Allow frontend access
+# ✅ CORS (IMPORTANT for frontend connection)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # You can restrict this later
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-UPLOAD_FOLDER = "uploads"
-
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
+# -----------------------------
+# BASIC ROUTES
+# -----------------------------
 
 @app.get("/")
 def root():
     return {"message": "MAREC HR360 API running"}
 
-
 @app.get("/ping")
 def ping():
     return {"status": "API alive"}
 
-
 @app.post("/register")
-def register(data: dict):
-    company = data.get("company")
-    email = data.get("email")
-
-    return {
-        "status": "workspace created",
-        "company": company,
-        "admin": email
-    }
-
+def register():
+    return {"status": "register works"}
 
 @app.post("/login")
-def login(data: dict):
-    email = data.get("email")
-
-    return {
-        "token": "demo-token",
-        "company": "Demo Workspace",
-        "email": email
-    }
-
+def login():
+    return {"status": "login works"}
 
 @app.post("/upload")
-async def upload(files: list[UploadFile] = File(...)):
+def upload():
+    return {"status": "upload works"}
 
-    saved_files = []
+# -----------------------------
+# DASHBOARD (MAIN DATA ENDPOINT)
+# -----------------------------
 
-    for file in files:
-
-        path = f"{UPLOAD_FOLDER}/{file.filename}"
-
-        with open(path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-
-        saved_files.append(file.filename)
-
+@app.get("/dashboard")
+def get_dashboard():
     return {
-        "status": "files uploaded",
-        "files": saved_files
+        "workforce": 842,
+        "attrition": 12,
+        "timeToHire": 28,
+
+        # 📊 Chart Data
+        "attritionTrend": [10, 12, 9, 14, 11],
+        "headcountTrend": [400, 500, 620, 710, 842],
+        "departments": {
+            "HR": 120,
+            "IT": 300,
+            "Sales": 200,
+            "Finance": 222
+        }
     }
