@@ -6,7 +6,7 @@ app = FastAPI()
 # ✅ CORS (IMPORTANT for frontend connection)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can restrict this later
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,8 +46,6 @@ def get_dashboard():
         "workforce": 842,
         "attrition": 12,
         "timeToHire": 28,
-
-        # 📊 Chart Data
         "attritionTrend": [10, 12, 9, 14, 11],
         "headcountTrend": [400, 500, 620, 710, 842],
         "departments": {
@@ -56,4 +54,21 @@ def get_dashboard():
             "Sales": 200,
             "Finance": 222
         }
+    }  # ✅ THIS WAS MISSING
+
+# -----------------------------
+# PHILOSOPHY ENDPOINT
+# -----------------------------
+
+@app.get("/philosophy")
+def get_philosophy():
+    return {
+        "mission": "Transform HR into strategic workforce intelligence",
+        "vision": "AI-powered HR decision making platform",
+        "values": [
+            "Data-driven",
+            "Human-first",
+            "Scalable",
+            "Predictive insight"
+        ]
     }
